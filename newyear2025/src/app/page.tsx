@@ -116,7 +116,7 @@ export default function Home() {
           <Card className="bg-white/90 backdrop-blur-sm border-red-200 shadow-lg overflow-hidden">
             <CardHeader>
               <CardTitle className="text-xl md:text-2xl font-bold text-center text-red-800">
-                {isNewYear ? '2025年、新年おめでとう！' : '2025年まで'}
+                {isNewYear ? 'Happy New Year!' : '2025年まで'}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -130,7 +130,7 @@ export default function Home() {
                     className="text-center"
                   >
                     <span className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-red-600 via-pink-500 to-purple-600 text-transparent bg-clip-text">
-                      明けましておめでとうございます！
+                      明けましておめでとうございます
                     </span>
                   </motion.div>
                 ) : (
