@@ -77,7 +77,9 @@ export default function Home() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: `${name}さんの2025年の抱負を生成してください。以下の目標と希望を考慮してください：${goals}`,
-            identifier: name
+            identifier: name,
+            name: name,
+            goals: goals
           })
         })
         const data = await response.json()
