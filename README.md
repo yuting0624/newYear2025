@@ -24,13 +24,13 @@
 ## 🛠️ 技術スタック
 
 - **フロントエンド**
-  - Next.js 14
+  - Next.js
   - TypeScript
   - Tailwind CSS
   - Framer Motion
 
 - **AI/ML**
-  - Google AI (Gemini 1.5 Flash)
+  - Google AI (Gemini 2.0 Flash)
 
 - **その他**
   - Vercel (ホスティング)
