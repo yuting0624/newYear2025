@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
-import { Button } from '@/components/ui/button'
+
+type Shape = 'square' | 'circle' | 'star'
 
 export function Confetti() {
   const [hasShownConfetti, setHasShownConfetti] = useState(false)
@@ -15,14 +16,14 @@ export function Confetti() {
   }, [])
 
   const celebrateNewYear = () => {
-    const duration = 10 * 1000
+    const duration = 15 * 1000
     const animationEnd = Date.now() + duration
     const defaults = { 
       startVelocity: 30, 
       spread: 360, 
       ticks: 60, 
       zIndex: 0,
-      shapes: ['circle', 'square'],
+      shapes: ['circle', 'square'] as Shape[], // 型アサーションを追加
       colors: ['#FF0000', '#FFD700', '#FF1493', '#4B0082', '#00FF00']
     }
 
@@ -30,14 +31,15 @@ export function Confetti() {
       return Math.random() * (max - min) + min
     }
 
-    const interval: any = setInterval(() => {
+    const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now()
 
       if (timeLeft <= 0) {
-        return clearInterval(interval)
+        window.clearInterval(interval)
+        return
       }
 
-      const particleCount = 50 * (timeLeft / duration)
+      const particleCount = Math.floor(50 * (timeLeft / duration))
       
       // 左側の発射
       confetti({
@@ -57,7 +59,7 @@ export function Confetti() {
       if (timeLeft > duration / 2) {
         confetti({
           ...defaults,
-          particleCount: particleCount * 0.5,
+          particleCount: Math.floor(particleCount * 0.5),
           origin: { x: 0.5, y: 0.5 },
           gravity: 1.2,
           scalar: 0.8
@@ -65,6 +67,7 @@ export function Confetti() {
       }
     }, 250)
 
+    // キラキラエフェクト
     setTimeout(() => {
       const end = Date.now() + 3000
       const colors = ['#ff0000', '#ffd700', '#00ff00', '#0099ff']
@@ -118,15 +121,15 @@ export function Confetti() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <Button
+      <button
         onClick={() => {
           celebrateNewYear()
           localStorage.removeItem('confettiDisplayed2025')
         }}
-        className="bg-red-800 hover:bg-red-700 text-white"
+        className="px-4 py-2 bg-red-800 hover:bg-red-700 text-white rounded-md transition-colors"
       >
         コンフェッティテスト
-      </Button>
+      </button>
     </div>
   )
 }
