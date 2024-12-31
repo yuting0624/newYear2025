@@ -191,15 +191,6 @@ export default function Home() {
 
         <footer className="w-full max-w-md text-center text-sm text-gray-600">
           <p>Created with ❤️ by Yu</p>
-          <a 
-            href="https://github.com/yourusername" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-gray-600 hover:text-red-800 transition-colors"
-          >
-            <Github className="w-4 h-4" />
-            <span>Source Code</span>
-          </a>
         </footer>
       </div>
     </main>
