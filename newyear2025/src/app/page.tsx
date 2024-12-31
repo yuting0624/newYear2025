@@ -11,7 +11,7 @@ import { Omikuji } from '@/components/omikuji'
 import { NewYearGreeting } from '@/components/new-year-greeting'
 import { SocialShare } from '@/components/social-share'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Github } from 'lucide-react'
+import { Github, Clock, Calendar, Hourglass } from 'lucide-react'
 import { keyframes } from '@emotion/react'
 
 const gradientAnimation = keyframes`
@@ -24,8 +24,20 @@ const animateGradient = {
   animation: `${gradientAnimation} 3s ease infinite`
 }
 
+type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState('')
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  })
   const [name, setName] = useState('')
   const [goals, setGoals] = useState('')
   const [resolution, setResolution] = useState('')
@@ -40,16 +52,15 @@ export default function Home() {
       const diff = newYear.getTime() - now.getTime()
 
       if (diff <= 0) {
-        setTimeLeft('明けましておめでとうございます！')
         setIsNewYear(true)
         clearInterval(timer)
       } else {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-
-        setTimeLeft(`${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`)
+        setTimeLeft({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((diff % (1000 * 60)) / 1000)
+        })
       }
     }, 1000)
 
@@ -83,6 +94,13 @@ export default function Home() {
     }
   }
 
+  const timeBlocks = [
+    { value: timeLeft.days, label: '日', icon: Calendar },
+    { value: timeLeft.hours, label: '時間', icon: Clock },
+    { value: timeLeft.minutes, label: '分', icon: Clock },
+    { value: timeLeft.seconds, label: '秒', icon: Hourglass }
+  ]
+
   return (
     <main className="min-h-screen bg-[url('/japanese-pattern.svg')] bg-repeat">
       <div className="min-h-screen bg-white/30 backdrop-blur-sm px-4 py-8 flex flex-col items-center justify-center space-y-6 md:space-y-8">
@@ -95,7 +113,7 @@ export default function Home() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          <Card className="bg-white/90 backdrop-blur-sm border-red-200 shadow-lg">
+          <Card className="bg-white/90 backdrop-blur-sm border-red-200 shadow-lg overflow-hidden">
             <CardHeader>
               <CardTitle className="text-xl md:text-2xl font-bold text-center text-red-800">
                 {isNewYear ? '2025年、新年おめでとう！' : '2025年まで'}
@@ -103,19 +121,62 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <AnimatePresence mode="wait">
-                <motion.p
-                  key={timeLeft}
-                  initial={{ y: 20, opacity: 0, scale: 0.9 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: -20, opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-3xl md:text-5xl font-extrabold text-center"
-                >
-                  <span className="bg-gradient-to-r from-red-600 via-pink-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient">
-                    {timeLeft}
-                  </span>
-                </motion.p>
+                {isNewYear ? (
+                  <motion.div
+                    key="newYear"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="text-center"
+                  >
+                    <span className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-red-600 via-pink-500 to-purple-600 text-transparent bg-clip-text">
+                      明けましておめでとうございます！
+                    </span>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="countdown"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-3"
+                  >
+                    {timeBlocks.map(({ value, label, icon: Icon }, index) => (
+                      <motion.div
+                        key={label}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="relative group"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-purple-600 opacity-50 rounded-lg blur-sm group-hover:opacity-75 transition-opacity" />
+                        <div className="relative bg-white/90 backdrop-blur-sm p-2 rounded-lg border border-red-200 shadow-lg text-center">
+                          <Icon className="w-4 h-4 mx-auto mb-1 text-red-800 opacity-75" />
+                          <motion.div
+                            key={value}
+                            initial={{ scale: 0.5, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                            className="text-2xl md:text-4xl font-bold text-red-800"
+                          >
+                            {String(value).padStart(2, '0')}
+                          </motion.div>
+                          <div className="text-xs md:text-sm text-gray-600 mt-1">
+                            {label}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
               </AnimatePresence>
+              
+              {!isNewYear && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-4 text-center text-sm text-gray-500"
+                >
+                  新年まであと少し！
+                </motion.div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -196,4 +257,3 @@ export default function Home() {
     </main>
   )
 }
-
