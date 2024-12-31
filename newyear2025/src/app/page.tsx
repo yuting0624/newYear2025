@@ -182,64 +182,68 @@ export default function Home() {
         </motion.div>
 
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-md"
+  initial={{ y: 50, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.5, delay: 0.2 }}
+  className="w-full max-w-md"
+>
+  <Card className="bg-white/90 backdrop-blur-sm border-red-200 shadow-lg overflow-hidden">
+    <CardHeader>
+      <CardTitle className="text-lg md:text-xl font-bold text-red-800">
+        🎍 AI抱負ジェネレーター 🎍
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="p-6">
+      <div className="grid w-full items-center gap-4">
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="name">お名前</Label>
+          <Input 
+            id="name" 
+            placeholder="名前を入力してください" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)}
+            className="border-red-200 focus:ring-red-800 w-full"
+          />
+        </div>
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="goals">2025年の目標や希望</Label>
+          <Textarea 
+            id="goals" 
+            placeholder="例：健康的な生活を送りたい、新しい趣味を見つけたい..." 
+            value={goals} 
+            onChange={(e) => setGoals(e.target.value)}
+            className="border-red-200 focus:ring-red-800 min-h-[80px] w-full"
+            rows={3}
+          />
+        </div>
+        {error && (
+          <p className="text-sm text-red-600 break-words">{error}</p>
+        )}
+        <Button 
+          onClick={handleGenerateResolution} 
+          disabled={isGeneratingResolution || !name || !goals}
+          className="bg-red-800 hover:bg-red-700 transition-colors w-full"
         >
-          <Card className="bg-white/90 backdrop-blur-sm border-red-200 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-lg md:text-xl font-bold text-red-800">
-                🎍 AI抱負ジェネレーター 🎍
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">お名前</Label>
-                  <Input 
-                    id="name" 
-                    placeholder="名前を入力してください" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)}
-                    className="border-red-200 focus:ring-red-800"
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="goals">2025年の目標や希望</Label>
-                  <Textarea 
-                    id="goals" 
-                    placeholder="例：健康的な生活を送りたい、新しい趣味を見つけたい..." 
-                    value={goals} 
-                    onChange={(e) => setGoals(e.target.value)}
-                    className="border-red-200 focus:ring-red-800 min-h-[80px]"
-                    rows={3}
-                  />
-                </div>
-                {error && (
-                  <p className="text-sm text-red-600">{error}</p>
-                )}
-                <Button 
-                  onClick={handleGenerateResolution} 
-                  disabled={isGeneratingResolution || !name || !goals}
-                  className="bg-red-800 hover:bg-red-700 transition-colors"
-                >
-                  {isGeneratingResolution ? '生成中...' : '抱負を生成'}
-                </Button>
-                {resolution && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 text-sm md:text-base whitespace-pre-line rounded-lg bg-red-50 p-4"
-                  >
-                    {resolution}
-                    <SocialShare text={`私の2025年の抱負:\n${resolution}`} />
-                  </motion.div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          {isGeneratingResolution ? '生成中...' : '抱負を生成'}
+        </Button>
+      </div>
+      {resolution && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 text-sm md:text-base rounded-lg bg-red-50 p-4"
+        >
+          <div className="whitespace-pre-line break-words">
+            {resolution}
+          </div>
+          <div className="mt-4 pt-4 border-t border-red-00">
+            <SocialShare text={`私の2025年の抱負:\n${resolution}`} />
+          </div>
         </motion.div>
+      )}
+    </CardContent>
+  </Card>
+</motion.div>
 
         <motion.div
           initial={{ y: 50, opacity: 0 }}
